@@ -30,4 +30,154 @@ function homeTeamName() {
     return gameObject().home.teamName;
 }
 
+function getHomeTeamColors() {
+    return gameObject().home.colors;
+}
+
+function getPlayerStats(playerName) {
+    const game = gameObject();
+    return game.home.players[playerName] || game.away.players[playerName] || "Player not found";
+}
+
+function numPointsScored(playerName) {
+    const player = getPlayerStats(playerName);
+    return player.points || "Player not found";
+}
+
+function shoeSize(playerName) {
+    const player = getPlayerStats(playerName);
+    return player.shoe || "Player not found";
+}
+
+function teamColors(teamName) {
+    const game = gameObject();
+    for (let team in game) {
+        if (game[team].teamName === teamName) {
+            return game[team].colors;
+        }
+    }
+    return "Team not found";
+}
+
+function teamNames() {
+    const game = gameObject();
+    return Object.values(game).map(team => team.teamName);
+}
+
+function playerNumbers(teamName) {
+    const game = gameObject();
+    for (let team in game) {
+        if (game[team].teamName === teamName) {
+            return Object.values(game[team].players).map(player => player.number);
+        }
+    }
+    return "Team not found";
+}
+
+function listAllPlayers() {
+    const game = gameObject();
+    let players = [];
+    
+    for (let team in game) {
+        for (let player in game[team]["players"]) {
+            players.push(player);
+        }
+    }
+    return players;
+}
+
+function getTeamKeys() {
+    return Object.keys(gameObject());
+}
+
+function getTeamValues() {
+    return Object.values(gameObject());
+}
+
+function getTeamEntries() {
+    return Object.entries(gameObject());
+}
+
+function bigShoeRebounds() {
+    const game = gameObject();
+    let largestShoeSize = 0;
+    let rebounds = 0;
+    
+    for (let team in game) {
+        for (let player in game[team].players) {
+            if (game[team].players[player].shoe > largestShoeSize) {
+                largestShoeSize = game[team].players[player].shoe;
+                rebounds = game[team].players[player].rebounds;
+            }
+        }
+    }
+    return rebounds;
+}
+
+function mostPointsScored() {
+    const game = gameObject();
+    let maxPoints = 0;
+    let topPlayer = "";
+    
+    for (let team in game) {
+        for (let player in game[team].players) {
+            if (game[team].players[player].points > maxPoints) {
+                maxPoints = game[team].players[player].points;
+                topPlayer = player;
+            }
+        }
+    }
+    return topPlayer;
+}
+
+function winningTeam() {
+    const game = gameObject();
+    let teamScores = {};
+    
+    for (let team in game) {
+        teamScores[game[team].teamName] = Object.values(game[team].players).reduce((sum, player) => sum + player.points, 0);
+    }
+    
+    return Object.keys(teamScores).reduce((a, b) => teamScores[a] > teamScores[b] ? a : b);
+}
+
+function playerWithLongestName() {
+    return listAllPlayers().reduce((longest, player) => player.length > longest.length ? player : longest, "");
+}
+
+
+function doesLongNameStealATon() {
+    const game = gameObject();
+    const longestNamePlayer = playerWithLongestName();
+    let maxSteals = 0;
+    
+    for (let team in game) {
+        for (let player in game[team].players) {
+            if (game[team].players[player].steals > maxSteals) {
+                maxSteals = game[team].players[player].steals;
+            }
+        }
+    }
+    
+    return game.home.players[longestNamePlayer]?.steals === maxSteals || game.away.players[longestNamePlayer]?.steals === maxSteals;
+}
+
+console.log(doesLongNameStealATon());
+
+
 console.log(homeTeamName());
+console.log(getHomeTeamColors());
+console.log(getPlayerStats("Brook Lopez"));
+console.log(numPointsScored("Brook Lopez"));
+console.log(shoeSize("Brook Lopez"));
+console.log(teamColors("Brooklyn Nets"));
+console.log(teamNames());
+console.log(playerNumbers("Brooklyn Nets"));
+console.log(listAllPlayers());
+console.log(getTeamKeys());
+console.log(getTeamValues());
+console.log(getTeamEntries());
+console.log(bigShoeRebounds());
+console.log(mostPointsScored());
+console.log(winningTeam());
+console.log(playerWithLongestName());
